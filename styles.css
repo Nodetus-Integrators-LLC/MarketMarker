@@ -12,13 +12,11 @@
 
 body {
     width: 400px;
-    height: 600px;
     font-family: 'Roboto', Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: var(--background-color);
-    color: var(--text-color);
-    overflow: hidden; /* Prevent body scroll */
+    overflow: hidden; /* Prevent body scroll */color: var(--text-color);
 }
 
 #app-container {
