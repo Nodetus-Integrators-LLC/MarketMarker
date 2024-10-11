@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Market Marker",
+  "version": "0.1.0",
+  "description": "A tool for creating and managing bookmarks for market research",
+  "permissions": [
+    "bookmarks",
+    "storage",
+    "tabs"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
