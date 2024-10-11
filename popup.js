@@ -1,47 +1,31 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const homeScreen = document.getElementById('home-screen');
-    const requirementView = document.getElementById('requirement-view');
-    const newRequirementScreen = document.getElementById('new-requirement');
-    const addRequirementBtn = document.getElementById('add-requirement');
     const createRequirementBtn = document.getElementById('create-requirement');
-    const backToHomeBtn = document.getElementById('back-to-home');
     const requirementsList = document.getElementById('requirements-list');
+    let draggingElement = null;
 
-    // Load existing requirements
     loadRequirements();
-
-    // Add event listeners
-    addRequirementBtn.addEventListener('click', showNewRequirementScreen);
     createRequirementBtn.addEventListener('click', saveNewRequirement);
-    backToHomeBtn.addEventListener('click', showHomeScreen);
 
     function loadRequirements() {
         chrome.storage.local.get('requirements', (result) => {
             const requirements = result.requirements || [];
             requirementsList.innerHTML = '';
             requirements.forEach((req, index) => {
-                const div = document.createElement('div');
-                div.textContent = `Requirement ${index + 1}: ${req.name}`;
-                div.addEventListener('click', () => showRequirementView(req));
-                requirementsList.appendChild(div);
+                const card = createRequirementCard(req, index);
+                requirementsList.appendChild(card);
             });
+            setupDragAndDrop();
         });
     }
 
-    function showNewRequirementScreen() {
-        homeScreen.style.display = 'none';
-        newRequirementScreen.style.display = 'block';
-    }
-
-    function saveNewRequirement(e) {
-        e.preventDefault();
+    function saveNewRequirement() {
         const newRequirement = {
             name: document.getElementById('requirement-name').value,
             priority: document.getElementById('priority').value,
             marketSector: document.getElementById('market-sector').value,
             productServiceType: document.getElementById('product-service-type').value,
             region: document.getElementById('region').value,
-            priceEstimate: document.getElementById('price-estimate').value
+            priceEstimate: document.getElementById('price-cost-estimate').value
         };
 
         chrome.storage.local.get('requirements', (result) => {
@@ -49,20 +33,125 @@ document.addEventListener('DOMContentLoaded', function () {
             requirements.push(newRequirement);
             chrome.storage.local.set({ requirements }, () => {
                 loadRequirements();
-                showHomeScreen();
+                clearInputFields();
             });
         });
     }
 
-    function showRequirementView(requirement) {
-        document.getElementById('requirement-title').textContent = `${requirement.name} {ID}`;
-        homeScreen.style.display = 'none';
-        requirementView.style.display = 'block';
+    function createRequirementCard(requirement, index) {
+        const card = document.createElement('div');
+        card.className = `requirement-card priority-${requirement.priority}`;
+        card.draggable = true;
+        card.dataset.index = index;
+        card.innerHTML = `
+            <h3>${requirement.name}</h3>
+            <p><strong>Priority:</strong> ${requirement.priority}</p>
+            <p><strong>Market Sector:</strong> ${requirement.marketSector}</p>
+            <p><strong>Product/Service Type:</strong> ${requirement.productServiceType}</p>
+            <p><strong>Region:</strong> ${requirement.region}</p>
+            <p><strong>Price/Cost Estimate:</strong> ${requirement.priceEstimate}</p>
+            <button class="delete-btn" data-index="${index}">Delete</button>
+        `;
+
+        const deleteBtn = card.querySelector('.delete-btn');
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteRequirement(index);
+        });
+
+        return card;
     }
 
-    function showHomeScreen() {
-        newRequirementScreen.style.display = 'none';
-        requirementView.style.display = 'none';
-        homeScreen.style.display = 'block';
+    function deleteRequirement(index) {
+        chrome.storage.local.get('requirements', (result) => {
+            const requirements = result.requirements || [];
+            requirements.splice(index, 1);
+            chrome.storage.local.set({ requirements }, loadRequirements);
+        });
+    }
+
+    function clearInputFields() {
+        document.getElementById('requirement-name').value = '';
+        document.getElementById('priority').value = 'high';
+        document.getElementById('market-sector').value = '';
+        document.getElementById('product-service-type').value = '';
+        document.getElementById('region').value = '';
+        document.getElementById('price-cost-estimate').value = '';
+    }
+
+    function setupDragAndDrop() {
+        const cards = document.querySelectorAll('.requirement-card');
+        cards.forEach(card => {
+            card.addEventListener('dragstart', dragStart);
+            card.addEventListener('dragend', dragEnd);
+            card.addEventListener('dragover', dragOver);
+            card.addEventListener('drop', drop);
+        });
+        requirementsList.addEventListener('dragover', listDragOver);
+    }
+
+    function dragStart(e) {
+        draggingElement = e.target;
+        setTimeout(() => e.target.classList.add('dragging'), 0);
+    }
+
+    function dragEnd(e) {
+        e.target.classList.remove('dragging');
+        draggingElement = null;
+        updateCardPositions();
+    }
+
+    function dragOver(e) {
+        e.preventDefault();
+        if (e.target.classList.contains('requirement-card') && e.target !== draggingElement) {
+            const draggingRect = draggingElement.getBoundingClientRect();
+            const targetRect = e.target.getBoundingClientRect();
+            if (draggingRect.top < targetRect.top) {
+                e.target.parentNode.insertBefore(draggingElement, e.target.nextSibling);
+            } else {
+                e.target.parentNode.insertBefore(draggingElement, e.target);
+            }
+        }
+    }
+
+    function listDragOver(e) {
+        e.preventDefault();
+        const afterElement = getDragAfterElement(requirementsList, e.clientY);
+        if (afterElement == null) {
+            requirementsList.appendChild(draggingElement);
+        } else {
+            requirementsList.insertBefore(draggingElement, afterElement);
+        }
+    }
+
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.requirement-card:not(.dragging)')];
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    function drop(e) {
+        e.preventDefault();
+        updateCardPositions();
+    }
+
+    function updateCardPositions() {
+        const cards = document.querySelectorAll('.requirement-card');
+        const newOrder = Array.from(cards).map(card => parseInt(card.dataset.index));
+
+        chrome.storage.local.get('requirements', (result) => {
+            const requirements = result.requirements || [];
+            const reorderedRequirements = newOrder.map(index => requirements[index]);
+            chrome.storage.local.set({ requirements: reorderedRequirements }, () => {
+                loadRequirements();
+            });
+        });
     }
 });

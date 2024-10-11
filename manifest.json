@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Market Research Bookmarker",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "A tool for creating and managing bookmarks for market research with data storage capabilities",
   "permissions": [
     "bookmarks",
@@ -24,10 +24,5 @@
     "16": "images/icon16.png",
     "48": "images/icon48.png",
     "128": "images/icon128.png"
-  },
-  "browser_action": {
-    "default_popup": "popup.html",
-    "default_width": 400,
-    "default_height": 600
   }
 }

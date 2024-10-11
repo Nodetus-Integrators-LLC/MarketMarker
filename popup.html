@@ -3,77 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Market Marker</title>
+    <title>Market Research Bookmarker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="app-container" role="application">
-        <div id="home-screen" class="screen" role="region" aria-label="Home Screen">
-            <header>
-                <h1>Market Marker</h1>
-            </header>
-            <div class="most-recent">
-                <label for="quick-add" class="visually-hidden">Quick Add Requirement</label>
-                <input type="text" id="quick-add" placeholder="Most Recent" aria-label="Quick add requirement">
-                <button id="add-requirement" class="btn-add" aria-label="Add new requirement">+</button>
-            </div>
-            <div id="requirements-list" role="list" aria-label="Requirements list"></div>
-        </div>
+    <div id="app-container">
+        <h1>Market Research Bookmarker</h1>
 
-        <div id="requirement-view" class="screen" style="display:none;" role="region" aria-label="Requirement View">
-            <header>
-                <button id="back-to-home" class="btn-icon" aria-label="Back to home">🏠</button>
-                <h2 id="requirement-title"></h2>
-                <button id="toggle-edit" class="btn-icon" aria-label="Toggle edit mode">↔️</button>
-            </header>
-            <div class="add-to-report">
-                <label for="add-to-report-select" class="visually-hidden">Add to Report</label>
-                <select id="add-to-report-select" aria-label="Add to report">
-                    <option value="">Add to Report</option>
-                </select>
-                <button id="bookmark" class="btn-icon" aria-label="Bookmark requirement">🔖</button>
-            </div>
-            <div class="requirement-nav">
-                <button id="vendors-btn" aria-label="View vendors">Vendors</button>
-            </div>
-        </div>
+        <div id="requirements-list"></div>
 
-        <div id="new-requirement" class="screen" style="display:none;" role="region" aria-label="New Requirement">
-            <header>
-                <h2>New Requirement</h2>
-            </header>
-            <form id="new-requirement-form">
-                <label for="requirement-name" class="visually-hidden">Requirement Name</label>
-                <input type="text" id="requirement-name" placeholder="Requirement Name" required aria-required="true">
-
-                <label for="priority" class="visually-hidden">Priority</label>
-                <select id="priority" required aria-required="true">
-                    <option value="">Priority</option>
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
-                </select>
-
-                <label for="market-sector" class="visually-hidden">Market Sector</label>
-                <select id="market-sector" required aria-required="true">
-                    <option value="">Market Sector</option>
-                    <!-- Add market sectors here -->
-                </select>
-
-                <label for="product-service-type" class="visually-hidden">Product/Service Type</label>
-                <select id="product-service-type" required aria-required="true">
-                    <option value="">Product/Service Type</option>
-                    <!-- Add product/service types here -->
-                </select>
-
-                <label for="region" class="visually-hidden">Region</label>
-                <input type="text" id="region" placeholder="Region" required aria-required="true">
-
-                <label for="price-estimate" class="visually-hidden">Price/Cost Estimate</label>
-                <input type="number" id="price-estimate" placeholder="Price/Cost Estimate" required aria-required="true">
-
-                <button type="submit" id="create-requirement" class="btn-primary">CREATE REQUIREMENT</button>
-            </form>
+        <div id="new-requirement">
+            <h2>New Requirement</h2>
+            <input type="text" id="requirement-name" placeholder="Requirement Name">
+            <select id="priority">
+                <option value="high">High Priority</option>
+                <option value="medium">Medium Priority</option>
+                <option value="low">Low Priority</option>
+            </select>
+            <input type="text" id="market-sector" placeholder="Market Sector">
+            <input type="text" id="product-service-type" placeholder="Product/Service Type">
+            <input type="text" id="region" placeholder="Region">
+            <input type="text" id="price-cost-estimate" placeholder="Price/Cost Estimate">
+            <button id="create-requirement">Create Requirement</button>
         </div>
     </div>
     <script src="popup.js"></script>
