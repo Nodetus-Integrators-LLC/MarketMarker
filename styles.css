@@ -137,6 +137,7 @@ button#create-requirement {
 }
 
 .requirement-card {
+    position: relative;
     background-color: #ffffff;
     border-radius: 10px;
     margin-bottom: 15px;
@@ -178,12 +179,24 @@ button#create-requirement {
     background-color: #f8f9fa;
     cursor: pointer;
     user-select: none;
+    position: relative;
 }
 
     .card-header:hover {
         background-color: #e9ecef;
     }
+    .card-header h3 {
+        margin: 0;
+        flex-grow: 1;
+        padding-right: 60px; /* Make space for toggle and delete buttons */
+    }
 
+.card-footer {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 10px;
+}
 /* Toggle Button Styles */
 .toggle-btn {
     background: none;
@@ -192,6 +205,7 @@ button#create-requirement {
     cursor: pointer;
     padding: 5px;
     transition: transform 0.3s ease;
+    margin-left: 10px;
 }
 
     .toggle-btn:hover {
@@ -200,34 +214,94 @@ button#create-requirement {
 
 /* Card Details Styles */
 .card-details {
+    padding: 15px;
+    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
     max-height: 1000px;
     overflow: hidden;
-    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
-    padding: 15px;
+    position: relative; /* Add this to contain absolute positioned children */
 }
 
     .card-details.hidden {
         max-height: 0;
-        padding-top: 0;
-        padding-bottom: 0;
+        padding: 0;
+        border-top: none;
     }
 
-    .card-details p {
-        margin: 10px 0;
-    }
+/* Card Footer Styles */
+.card-footer {
+    text-align: right;
+    padding-top: 10px;
+}
 
 /* Delete Button Styles */
 .delete-btn {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background-color: transparent;
+    border: 1px solid var(--error-color);
+    border-radius: 50%;
+    color: var(--error-color);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    float: right;
+}
+.delete-btn:hover {
+    background-color: var(--error-color);
+    color: #ffffff;
+}
+
+.delete-icon {
     display: block;
-    width: 100%;
+    transform: translateY(-1px);
+}
+
+/* Delete Confirmation Styles */
+.delete-confirmation {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #f8f9fa;
+    border-top: 1px solid #ddd;
     padding: 10px;
+    z-index: 10;
+    transition: transform 0.3s ease-out;
+    transform: translateY(100%);
+}
+
+.delete-confirmation:not(.hidden) {
+    transform: translateY(0);
+}
+
+.delete-confirmation-input {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.confirm-delete-btn {
+    width: 100%;
+    padding: 5px 10px;
     background-color: var(--error-color);
     color: #ffffff;
     border: none;
+    border-radius: 3px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-    .delete-btn:hover {
+    .confirm-delete-btn:hover {
         background-color: #c0392b;
     }
+
+/* Ensure delete confirmation is hidden when card is collapsed */
+.card-details.hidden .delete-confirmation {
+    display: none;
+}

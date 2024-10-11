@@ -40,37 +40,100 @@ function initializeExtension() {
         card.draggable = true;
         card.dataset.index = index;
         card.innerHTML = `
-            <div class="card-header">
-                <h3>${requirement.id}: ${requirement.need}</h3>
-                <button class="toggle-btn">▼</button>
-            </div>
-            <div class="card-details hidden">
-                <p><strong>Priority:</strong> ${requirement.priority}</p>
-                <p><strong>Market Sector:</strong> ${requirement.marketSector}</p>
-                <p><strong>Product/Service Type:</strong> ${requirement.productServiceType}</p>
-                <p><strong>Region:</strong> ${requirement.region}</p>
-                <p><strong>Due Date:</strong> ${requirement.dueDate}</p>
-                <p><strong>Price/Cost Estimate:</strong> ${requirement.priceEstimate}</p>
-                <p><strong>Set-Aside:</strong> ${requirement.setAside}</p>
-                <p><strong>NAICS Code:</strong> ${requirement.naicsCode}</p>
-                ${requirement.gsaSchedule ? `<p><strong>GSA Schedule:</strong> ${requirement.gsaSchedule}</p>` : ''}
-                ${requirement.commercialPractices ? `<p><strong>Commercial Practices:</strong> ${requirement.commercialPractices}</p>` : ''}
-                ${requirement.qualityFactors ? `<p><strong>Quality Factors:</strong> ${requirement.qualityFactors}</p>` : ''}
-                ${requirement.riskFactors ? `<p><strong>Risk Factors:</strong> ${requirement.riskFactors}</p>` : ''}
-                ${requirement.additionalNotes ? `<p><strong>Additional Notes:</strong> ${requirement.additionalNotes}</p>` : ''}
-            </div>
-            <button class="delete-btn" data-index="${index}">Delete</button>
-        `;
+        <div class="card-header">
+            <h3>${requirement.id}: ${requirement.need}</h3>
+            <button class="toggle-btn" aria-label="Expand details">▼</button>
+        </div>
+        <div class="card-details hidden">
+            <p><strong>Priority:</strong> ${requirement.priority}</p>
+            <p><strong>Market Sector:</strong> ${requirement.marketSector}</p>
+            <p><strong>Product/Service Type:</strong> ${requirement.productServiceType}</p>
+            <p><strong>Region:</strong> ${requirement.region}</p>
+            <p><strong>Due Date:</strong> ${requirement.dueDate}</p>
+            <p><strong>Price/Cost Estimate:</strong> ${requirement.priceEstimate}</p>
+            <p><strong>Set-Aside:</strong> ${requirement.setAside}</p>
+            <p><strong>NAICS Code:</strong> ${requirement.naicsCode}</p>
+            ${requirement.gsaSchedule ? `<p><strong>GSA Schedule:</strong> ${requirement.gsaSchedule}</p>` : ''}
+            ${requirement.commercialPractices ? `<p><strong>Commercial Practices:</strong> ${requirement.commercialPractices}</p>` : ''}
+            ${requirement.qualityFactors ? `<p><strong>Quality Factors:</strong> ${requirement.qualityFactors}</p>` : ''}
+            ${requirement.riskFactors ? `<p><strong>Risk Factors:</strong> ${requirement.riskFactors}</p>` : ''}
+            ${requirement.additionalNotes ? `<p><strong>Additional Notes:</strong> ${requirement.additionalNotes}</p>` : ''}
+        </div>
+    `;
 
-        const deleteBtn = card.querySelector('.delete-btn');
-        deleteBtn.addEventListener('click', (e) => {
+        const toggleBtn = card.querySelector('.toggle-btn');
+        const cardDetails = card.querySelector('.card-details');
+
+        toggleBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            deleteRequirement(index);
+            const isExpanding = cardDetails.classList.contains('hidden');
+            cardDetails.classList.toggle('hidden');
+            toggleBtn.textContent = isExpanding ? '▲' : '▼';
+            toggleBtn.setAttribute('aria-label', isExpanding ? 'Collapse details' : 'Expand details');
+
+            if (isExpanding) {
+                if (!card.querySelector('.delete-btn')) {
+                    const deleteBtn = createDeleteButton(index);
+                    cardDetails.appendChild(deleteBtn);
+                }
+            } else {
+                const deleteBtn = card.querySelector('.delete-btn');
+                if (deleteBtn) {
+                    deleteBtn.remove();
+                }
+                // Hide delete confirmation when collapsing
+                const deleteConfirmation = card.querySelector('.delete-confirmation');
+                if (deleteConfirmation) {
+                    deleteConfirmation.remove();
+                }
+            }
         });
 
-        setupCardToggle(card);
-
         return card;
+    }
+
+    function createDeleteButton(index) {
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.setAttribute('data-index', index);
+        deleteBtn.setAttribute('aria-label', 'Delete requirement');
+        deleteBtn.innerHTML = '<span class="delete-icon">×</span>';
+
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showDeleteConfirmation(index);
+        });
+
+        return deleteBtn;
+    }
+
+    function showDeleteConfirmation(index) {
+        const card = document.querySelector(`.requirement-card[data-index="${index}"]`);
+        let deleteConfirmation = card.querySelector('.delete-confirmation');
+
+        if (!deleteConfirmation) {
+            deleteConfirmation = document.createElement('div');
+            deleteConfirmation.className = 'delete-confirmation';
+            deleteConfirmation.innerHTML = `
+            <input type="text" class="delete-confirmation-input" placeholder="Type 'DELETE THIS'">
+            <button class="confirm-delete-btn">Confirm Delete</button>
+        `;
+            card.appendChild(deleteConfirmation);
+
+            const confirmDeleteBtn = deleteConfirmation.querySelector('.confirm-delete-btn');
+            const deleteConfirmationInput = deleteConfirmation.querySelector('.delete-confirmation-input');
+
+            confirmDeleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (deleteConfirmationInput.value.trim() === 'DELETE THIS') {
+                    deleteRequirement(index);
+                } else {
+                    alert('Please type "DELETE THIS" to confirm deletion.');
+                }
+            });
+        }
+
+        deleteConfirmation.classList.remove('hidden');
     }
 
     // Function to set up toggle functionality for a card
