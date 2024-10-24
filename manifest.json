@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Market Research Bookmarker",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "A tool for creating and managing bookmarks for market research with data storage capabilities",
   "permissions": [
     "bookmarks",
@@ -11,19 +11,47 @@
     "activeTab"
   ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "src/views/popup.html",
     "default_icon": {
-      "16": "images/icon16.png",
-      "48": "images/icon48.png",
-      "128": "images/icon128.png"
+      "16": "src/assets/images/icon16.png",
+      "48": "src/assets/images/icon48.png",
+      "128": "src/assets/images/icon128.png"
     }
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/js/background-worker.js"
   },
+  "content_scripts": [
+    {
+      "matches": [ "<all_urls>" ],
+      "css": [ "src/styles/main.css" ],
+      "js": [ "src/js/main.js" ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/js/*.js",
+        "src/js/components/*.js",
+        "src/js/services/*.js",
+        "src/js/utils/*.js",
+        "src/styles/*.css",
+        "src/styles/base/*.css",
+        "src/styles/components/*.css",
+        "src/styles/layouts/*.css",
+        "src/styles/utilities/*.css",
+        "src/views/components/*.html",
+        "src/assets/images/*"
+      ],
+      "matches": [ "<all_urls>" ]
+    }
+  ],
   "icons": {
-    "16": "images/icon16.png",
-    "48": "images/icon48.png",
-    "128": "images/icon128.png"
+    "16": "src/assets/images/icon16.png",
+    "48": "src/assets/images/icon48.png",
+    "128": "src/assets/images/icon128.png"
+  },
+  "chrome_url_overrides": {
+    "newtab": "src/views/popup.html"
   }
 }

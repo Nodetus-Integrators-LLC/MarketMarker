@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Research Bookmarker</title>
+    <link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+    <div id="app-container">
+        <header class="header">
+            <div class="header-content">
+                <h1 class="header-title">Market Marker</h1>
+                <div class="header-actions">
+                    <button id="add-requirement-btn" class="btn btn-primary">
+                        Add Requirement
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="content-container">
+            <div id="requirements-list" class="requirements-container">
+                <!-- Requirements will be dynamically inserted here -->
+            </div>
+        </main>
+
+        <button id="new-window-btn" class="action-btn">
+            <span class="visually-hidden">New Window</span>
+            +
+        </button>
+    </div>
+
+    <!-- Import our component templates -->
+    <link rel="import" href="components/requirement-card.html">
+    <link rel="import" href="components/modal.html">
+
+    <!-- Scripts -->
+    <script type="module" src="../js/main.js"></script>
+</body>
+</html>

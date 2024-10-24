@@ -1,0 +1,58 @@
+﻿src/
+├── assets/
+│   └── images/
+│       ├── icon16.png
+│       ├── icon48.png
+│       └── icon128.png
+│
+├── styles/
+│   ├── base/
+│   │   ├── _reset.css
+│   │   ├── _typography.css
+│   │   ├── _variables.css
+│   │   └── _animations.css
+│   │
+│   ├── components/
+│   │   ├── _buttons.css
+│   │   ├── _cards.css
+│   │   ├── _forms.css
+│   │   ├── _modal.css
+│   │   └── _windows.css
+│   │
+│   ├── layouts/
+│   │   ├── _header.css
+│   │   ├── _grid.css
+│   │   └── _containers.css
+│   │
+│   ├── utilities/
+│   │   ├── _helpers.css
+│   │   └── _responsive.css
+│   │
+│   └── main.css
+│
+├── js/
+│   ├── components/
+│   │   ├── WindowManager.js
+│   │   ├── RequirementCard.js
+│   │   └── Modal.js
+│   │
+│   ├── services/
+│   │   ├── StorageService.js
+│   │   ├── BookmarkService.js
+│   │   ├── RequirementService.js    # Added RequirementService
+│   │   └── BackgroundService.js     # Added BackgroundService
+│   │
+│   ├── utils/
+│   │   ├── validators.js
+│   │   └── helpers.js
+│   │
+│   └── main.js
+│
+├── views/
+│   ├── components/
+│   │   ├── requirement-card.html
+│   │   └── modal.html
+│   │
+│   └── popup.html
+│
+└── manifest.json

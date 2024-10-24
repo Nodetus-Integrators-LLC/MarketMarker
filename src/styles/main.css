@@ -1,0 +1,71 @@
+/* Base styles */
+@import 'base/_reset.css';
+@import 'base/_variables.css';
+@import 'base/_typography.css';
+@import 'base/_animations.css';
+
+/* Layout styles */
+@import 'layouts/_containers.css';
+@import 'layouts/_grid.css';
+@import 'layouts/_header.css';
+@import 'layouts/_market-research.css';
+
+/* Component styles */
+@import 'components/_buttons.css';
+@import 'components/_cards.css';
+@import 'components/_forms.css';
+@import 'components/_modal.css';
+@import 'components/_windows.css';
+
+/* Utility styles */
+@import 'utilities/_helpers.css';
+@import 'utilities/_responsive.css';
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    .page-break {
+        page-break-before: always;
+    }
+
+    /* Ensure proper printing of window content */
+    .window-content {
+        overflow: visible !important;
+        height: auto !important;
+    }
+
+    /* Remove shadows and backgrounds for better printing */
+    .card,
+    .modal,
+    .window {
+        box-shadow: none !important;
+        background: white !important;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Override default variables for dark mode */
+        --color-background: #1a1a1a;
+        --color-surface: #2d2d2d;
+        --color-text: #e0e0e0;
+        --color-text-light: #a0a0a0;
+        /* Add more dark mode variable overrides as needed */
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --color-primary: #000000;
+        --color-text: #000000;
+        --color-background: #ffffff;
+        --shadow-sm: none;
+        --shadow-md: none;
+        --shadow-lg: none;
+    }
+}
